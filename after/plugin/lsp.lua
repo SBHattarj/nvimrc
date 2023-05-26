@@ -12,7 +12,7 @@ lsp.ensure_installed({
 	'eslint',
     'svelte',
 	'rust_analyzer',
-	'sumneko_lua'
+	'lua_ls'
 })
 
 local cmp = require('cmp')
