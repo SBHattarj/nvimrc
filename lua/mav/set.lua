@@ -23,3 +23,10 @@ vim.opt.isfname:append("@-@")
 vim.opt.updatetime = 50
 
 vim.opt.colorcolumn = "80"
+vim.diagnostic.config({
+    update_in_insert = false
+})
+
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { bg = "#e7cc00" })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { bg = "#b00022" })
+

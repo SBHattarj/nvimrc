@@ -13,3 +13,6 @@ vim.keymap.set("x", "<leader>p", "\"_dp")
 
 vim.keymap.set("n", "<leader>s", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
 
+vim.keymap.set("n", "<leader>wt", function () require('telescope').extensions.git_worktree.git_worktrees() end)
+vim.keymap.set("n", "<leader>cwt", function () require('telescope').extensions.git_worktree.create_git_worktree() end)
+

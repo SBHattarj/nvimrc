@@ -9,6 +9,7 @@ return require('packer').startup(function(use)
 	  -- or                            , branch = '0.1.x',
 	  requires = { {'nvim-lua/plenary.nvim'} }
   }
+  use 'ThePrimeagen/git-worktree.nvim'
   use 'thedenisnikulin/vim-cyberpunk'
   use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
   use('nvim-treesitter/nvim-treesitter-context')
@@ -39,13 +40,14 @@ return require('packer').startup(function(use)
 	  }
   }
   -- Remove the `use` here if you're using folke/lazy.nvim.
-    use {
+  use {
       'Exafunction/codeium.vim',
       config = function ()
         -- Change '<C-g>' here to any keycode you like.
-        vim.keymap.set('i', '<C-Space>', function () return vim.fn['codeium#Accept']() end, { expr = true })
-        vim.keymap.set('i', '<C-]>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
-        vim.keymap.set('i', '<C-[>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
+        vim.g.codeium_disable_bindings = 1
+        vim.keymap.set('i', '<C-y>', function () return vim.fn['codeium#Accept']() end, { expr = true })
+        vim.keymap.set('i', '<C-o>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
+        vim.keymap.set('i', '<C-p>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
         vim.keymap.set('i', '<C-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
       end
     }
@@ -75,6 +77,9 @@ return require('packer').startup(function(use)
             })
         end,
     })
+    use {
+        'nvim-lualine/lualine.nvim',
+        requires = { 'nvim-tree/nvim-web-devicons', opt = true }
+    }
     use('ryanoasis/vim-devicons')
 end)
-
