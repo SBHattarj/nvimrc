@@ -1,9 +1,9 @@
-local lsp = require('lsp-zero').preset({})
+local lsp = require('lsp-zero').preset({
+})
 
 lsp.on_attach(function(client, bufnr)
-  lsp.default_keymaps({buffer = bufnr})
+  lsp.default_keymaps({buffer = bufnr, omit = {'<C-o>', '<C-p>', '<C-P>', '<C-y>'}})
 end)
-
 -- (Optional) Configure lua language server for neovim
 require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
 
@@ -16,6 +16,17 @@ lsp.ensure_installed({
 })
 
 local cmp = require('cmp')
+cmp.setup({
+    preselect = 'item',
+    completion = {
+        completeopt = 'menu,menuone,noinsert'
+    },
+    window = {
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
+    }
+})
+
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
 local cmp_mappings = lsp.defaults.cmp_mappings({
 	['<C-k>'] = cmp.mapping.select_prev_item(cmp_select),
@@ -45,8 +56,9 @@ vim.api.nvim_create_augroup("lsp_diagnostics_hold", { clear = true })
 vim.api.nvim_create_autocmd("CursorHold", {
     pattern = "*",
     group = "lsp_diagnostics_hold",
-    callback = function()
-        vim.diagnostic.open_float(0, {
+    callback = function(event)
+        local buf = event["buf"]
+        vim.diagnostic.open_float(buf, {
             scope = "cursor",
             focusable = false,
             close_events = {
@@ -55,6 +67,12 @@ vim.api.nvim_create_autocmd("CursorHold", {
                 "BufHidden",
                 "InsertCharPre",
                 "WinLeave",
+                "BufLeave",
+                "BufNew",
+                "BufWipeout",
+                "BufAdd",
+                "BufRead",
+                "DirChanged",
             },
         })
     end

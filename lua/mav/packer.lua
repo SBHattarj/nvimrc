@@ -39,13 +39,19 @@ return require('packer').startup(function(use)
 		  {'L3MON4D3/LuaSnip'},     -- Required
 	  }
   }
+  use {
+      "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+      config = function ()
+          require("lsp_lines").setup()
+      end
+  }
   -- Remove the `use` here if you're using folke/lazy.nvim.
   use {
       'Exafunction/codeium.vim',
       config = function ()
         -- Change '<C-g>' here to any keycode you like.
         vim.g.codeium_disable_bindings = 1
-        vim.keymap.set('i', '<C-y>', function () return vim.fn['codeium#Accept']() end, { expr = true })
+        vim.keymap.set('i', '<C-Space>', function () return vim.fn['codeium#Accept']() end, { expr = true })
         vim.keymap.set('i', '<C-o>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
         vim.keymap.set('i', '<C-p>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
         vim.keymap.set('i', '<C-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
