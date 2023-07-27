@@ -1,5 +1,6 @@
 local lsp = require('lsp-zero').preset({
 })
+local timer = require("mav.timer")
 
 lsp.on_attach(function(client, bufnr)
   lsp.default_keymaps({buffer = bufnr, omit = {'<C-o>', '<C-p>', '<C-P>', '<C-y>'}})
@@ -52,6 +53,7 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
 end)
+local hover_info_timeout
 vim.api.nvim_create_augroup("lsp_diagnostics_hold", { clear = true })
 vim.api.nvim_create_autocmd("CursorHold", {
     pattern = "*",
@@ -75,6 +77,8 @@ vim.api.nvim_create_autocmd("CursorHold", {
                 "DirChanged",
             },
         })
+        timer.clearTimeout(hover_info_timeout)
+        hover_info_timeout = timer.setTimeout(1500, function () vim.lsp.buf.hover() end)
     end
 })
 lsp.setup()
