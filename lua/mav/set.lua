@@ -7,7 +7,6 @@ vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
-vim.opt.smartindent = true
 vim.opt.breakindent = true
 
 vim.opt.swapfile = false
@@ -69,7 +68,6 @@ local mouse_moved_cb = function(tab)
     prev_ext2 = prev_ext2_temp
     prev_buff = cur_buf
 end
-
 vim.api.nvim_create_augroup("cursor_padding", { clear = true })
 vim.api.nvim_create_autocmd(
     "CursorMoved",
@@ -88,3 +86,52 @@ vim.api.nvim_create_autocmd(
     }
 )
 
+
+local prev_buffers = {}
+local next_buffers = {}
+local explicit_changing_buf = false
+local buf_enter_cb = function(tab)
+    if explicit_changing_buf then
+        explicit_changing_buf = false
+        return
+    end
+    local buf = tab["buf"]
+    next_buffers = {}
+    if prev_buffers[#prev_buffers] == buf then
+        return
+    end
+    prev_buffers[#prev_buffers + 1] = buf
+    --local list_rep = ""
+    --for i=1, #prev_buffers do
+   -- list_rep = list_rep .. prev_buffers[i] .. ","
+   --end
+end
+vim.api.nvim_create_augroup("buf_enter", { clear = true })
+vim.api.nvim_create_autocmd(
+    "BufEnter",
+    {
+        pattern = "*",
+        group = "buf_enter",
+        callback=buf_enter_cb
+    }
+)
+vim.keymap.set("n", "<leader>h", function ()
+    if #prev_buffers < 2 then
+        vim.notify("oldest buffer", vim.log.levels.ERROR)
+        return
+    end
+    explicit_changing_buf = true
+    next_buffers[#next_buffers+1] = table.remove(prev_buffers, #prev_buffers)
+    vim.api.nvim_set_current_buf(prev_buffers[#prev_buffers])
+
+end)
+vim.keymap.set("n", "<leader>l", function ()
+    if #next_buffers < 1 then
+        vim.notify("newest buffer", vim.log.levels.ERROR)
+        return
+    end
+    explicit_changing_buf = true
+    prev_buffers[#prev_buffers+1] = table.remove(next_buffers, #next_buffers)
+    vim.api.nvim_set_current_buf(prev_buffers[#prev_buffers])
+
+end)
