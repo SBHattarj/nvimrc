@@ -34,6 +34,8 @@ vim.diagnostic.config({
 local ns_id = vim.api.nvim_create_namespace("mav")
 local prev_ext1 = -1
 local prev_ext2 = -1
+local prev_ext3 = -1
+local prev_ext4 = -1
 local prev_buff = 0
 
 local mouse_moved_cb = function(tab)
@@ -58,14 +60,47 @@ local mouse_moved_cb = function(tab)
             virt_lines_above = true
         }
     )
+    local prev_ext3_temp = vim.api.nvim_buf_set_extmark(
+        cur_buf,
+        ns_id,
+        vim.api.nvim_win_get_cursor(0)[1] - 1,
+        vim.api.nvim_win_get_cursor(0)[2],
+        {
+            virt_text = {{" "}},
+            virt_text_pos = "inline"
+        }
+    )
+    local is_success, res = pcall(vim.api.nvim_buf_set_extmark,
+        cur_buf,
+        ns_id,
+        vim.api.nvim_win_get_cursor(0)[1] - 1,
+        vim.api.nvim_win_get_cursor(0)[2] + 1,
+        {
+            virt_text = {{" "}},
+            virt_text_pos = "inline"
+        }
+    )
+    if is_success then
+        prev_ext4_temp = res
+    else
+        prev_ext4_temp = -1
+    end
     if prev_ext1 > -1 then
         pcall(vim.api.nvim_buf_del_extmark, prev_buff, ns_id, prev_ext1)
     end
-    if prev_ext2  -1 then
+    if prev_ext2 >  -1 then
         pcall(vim.api.nvim_buf_del_extmark, prev_buff, ns_id, prev_ext2)
+    end
+    if prev_ext3 > -1 then
+        pcall(vim.api.nvim_buf_del_extmark, prev_buff, ns_id, prev_ext3)
+    end
+    if prev_ext4 > -1 then
+        pcall(vim.api.nvim_buf_del_extmark, prev_buff, ns_id, prev_ext4)
     end
     prev_ext1 = prev_ext1_temp
     prev_ext2 = prev_ext2_temp
+    prev_ext3 = prev_ext3_temp
+    prev_ext4 = prev_ext4_temp
     prev_buff = cur_buf
 end
 vim.api.nvim_create_augroup("cursor_padding", { clear = true })
@@ -135,3 +170,7 @@ vim.keymap.set("n", "<leader>l", function ()
     vim.api.nvim_set_current_buf(prev_buffers[#prev_buffers])
 
 end)
+vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+    pattern = "*.pyx",
+    command = "setfiletype python"
+})
