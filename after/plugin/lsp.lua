@@ -73,19 +73,6 @@ cmp.setup({
         completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
     },
-    --sources = {
-    --    { name = 'nvim-lsp' },
-    --},
-    --mapping = cmp.mapping.preset.insert({
-    --    ['<C-R>'] = cmp.mapping.confirm({ select = false }),
-    --    ['<C-t>'] = cmp.mapping.complete(),
-    --}),
-    --snippet = {
-    --    expand = function(args)
-    --        print("expand")
-    --        require('luasnip').lsp_expand(args.body)
-    --    end
-    --}
 })
 
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
