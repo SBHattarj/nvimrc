@@ -45,8 +45,6 @@ require('mason-lspconfig').setup({
 --    vim.lsp.enable(lsp)
 --end
 
---print("hi")
-
 local lsp = require('lsp-zero').preset({
 })
 
